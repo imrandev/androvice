@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.codevice.androvice.config.Config;
 
+import static com.codevice.androvice.config.Config.DELAY_TIME;
 import static com.codevice.androvice.config.Config.MSG_UPDATE;
 
 public class ServiceHandler extends Handler {
@@ -29,7 +30,7 @@ public class ServiceHandler extends Handler {
                 intent.putExtra("result", "Hello Service");
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                 Message nmsg = obtainMessage(MSG_UPDATE);
-                sendMessageDelayed(nmsg, 1000);
+                sendMessageDelayed(nmsg, DELAY_TIME);
             } break;
             default:
                 super.handleMessage(message);

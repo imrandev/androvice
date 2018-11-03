@@ -5,4 +5,5 @@ public class Config {
     public static final int NOTIFICATION_ID = 1;
     public static final int FOREGROUND_SERVICE_ID = 1;
     public static final int MSG_UPDATE = 1;
+    public static final int DELAY_TIME = 10000;
 }
