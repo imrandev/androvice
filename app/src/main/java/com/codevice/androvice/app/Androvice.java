@@ -12,6 +12,7 @@ public class Androvice extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        //we can start the service from application instead of clicking 'START' button
         //startService();
     }
 

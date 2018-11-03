@@ -12,11 +12,9 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.codevice.androvice.MainActivity;
 import com.codevice.androvice.R;
-import com.codevice.androvice.config.Config;
 import com.codevice.androvice.handler.ServiceHandler;
 import android.support.annotation.Nullable;
 
@@ -28,8 +26,6 @@ public class ServiceTime extends Service {
 
     private volatile HandlerThread mHandlerThread;
     private ServiceHandler mServiceHandler;
-    private NotificationManager mNotificationManager;
-    private NotificationCompat.Builder mNotificationBuilder;
 
     @Nullable
     @Override
@@ -39,16 +35,6 @@ public class ServiceTime extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Send empty message to background thread
-//        mServiceHandler.sendEmptyMessageDelayed(0, 500);
-//        // or run code in background
-//        mServiceHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                sendMessage();
-//            }
-//        });
-
         // Prepare to do update reports.
         mServiceHandler.removeMessages(MSG_UPDATE);
         Message msg = mServiceHandler.obtainMessage(MSG_UPDATE);
@@ -71,6 +57,8 @@ public class ServiceTime extends Service {
 
     private void buildNotification() {
 
+        NotificationManager mNotificationManager;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.app_name);
             String description = "Androvice is working";
@@ -88,7 +76,7 @@ public class ServiceTime extends Service {
 
         PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        mNotificationBuilder = new NotificationCompat.Builder(this, getPackageName())
+        NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this, getPackageName())
                 .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                 .setContentTitle(getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_launcher_round)
@@ -97,16 +85,9 @@ public class ServiceTime extends Service {
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setContentIntent(resultPendingIntent);
         startForeground(FOREGROUND_SERVICE_ID, mNotificationBuilder.build());
-    }
 
-    private void sendMessage() {
         mNotificationBuilder.setContentText("Hello Service");
         mNotificationManager.notify(NOTIFICATION_ID, mNotificationBuilder.build());
-
-        // Send broadcast out with action filter and extras
-//        Intent intent = new Intent(Config.ACTION_NAME);
-//        intent.putExtra("result", "Hello Service");
-//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @Override

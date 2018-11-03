@@ -29,8 +29,8 @@ public class ServiceHandler extends Handler {
                 Intent intent = new Intent(Config.ACTION_NAME);
                 intent.putExtra("result", "Hello Service");
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-                Message nmsg = obtainMessage(MSG_UPDATE);
-                sendMessageDelayed(nmsg, DELAY_TIME);
+                Message msg = obtainMessage(MSG_UPDATE);
+                sendMessageDelayed(msg, DELAY_TIME);
             } break;
             default:
                 super.handleMessage(message);
