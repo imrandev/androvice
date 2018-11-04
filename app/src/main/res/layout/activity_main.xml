@@ -6,11 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btn_service"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start"
-        android:layout_centerInParent="true"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <LinearLayout
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_margin="5dp"
+                android:id="@+id/btn_service"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start Service (Broadcast Receiver)"/>
+
+            <Button
+                android:layout_margin="5dp"
+                android:id="@+id/btn_intent_service"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start Intent Service (Result Receiver)"/>
+
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,25 +15,40 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.codevice.androvice.config.Config;
+import com.codevice.androvice.receiver.AndroviceReceiver;
+import com.codevice.androvice.service.IntentServiceTime;
 import com.codevice.androvice.service.ServiceTime;
 
 public class MainActivity extends AppCompatActivity {
+
+    private AndroviceReceiver androviceReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button startButton = findViewById(R.id.btn_service);
+        Button serviceButton = findViewById(R.id.btn_service);
+        Button intentServiceButton = findViewById(R.id.btn_intent_service);
 
-        startButton.setOnClickListener(onClickListener);
+        serviceButton.setOnClickListener(onClickListener);
+        intentServiceButton.setOnClickListener(onClickListener);
+
+        setUpReceiver();
     }
 
     private View.OnClickListener onClickListener
             = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startService();
+            switch (v.getId()){
+                case R.id.btn_service:
+                    onStartService();
+                    break;
+                case R.id.btn_intent_service:
+                    onStartIntentService();
+                    break;
+            }
         }
     };
 
@@ -52,13 +68,37 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    public void startService(){
+    public void onStartService(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, ServiceTime.class));
         } else {
             startService(new Intent(this, ServiceTime.class));
         }
     }
+
+    // Starts the IntentService
+    public void onStartIntentService() {
+        Intent i = new Intent(this, IntentServiceTime.class);
+        i.putExtra("foo", "Hello Intent Service");
+        i.putExtra("receiver", androviceReceiver);
+        startService(i);
+    }
+
+    public void setUpReceiver(){
+        androviceReceiver = new AndroviceReceiver(new Handler());
+        // This is where we specify what happens when data is received from the service
+        androviceReceiver.setReceiver(receiver);
+    }
+
+    private AndroviceReceiver.Receiver receiver =  new AndroviceReceiver.Receiver() {
+        @Override
+        public void onReceiveResult(int resultCode, Bundle resultData) {
+            if (resultCode == RESULT_OK) {
+                String resultValue = resultData.getString("resultValue");
+                Toast.makeText(MainActivity.this, resultValue, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
